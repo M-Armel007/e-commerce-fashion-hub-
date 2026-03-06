@@ -56,26 +56,35 @@ Route::get('/redirect', [RedirectAuthenticatedUsersController::class, 'redirect'
 
 // Routes admin (protégées par auth et middleware admin)
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard - UNE SEULE ROUTE
+    
+    // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard'); // Redirection vers dashboard
     
-    // Gestion produits
+    // Gestion produits - TOUTES avec AdminController
     Route::get('/products', [AdminController::class, 'products'])->name('products');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('/products/create', [AdminController::class, 'createProduct'])->name('products.create');
+    Route::post('/products', [AdminController::class, 'storeProduct'])->name('products.store');
+    Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('products.edit');
+    Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('products.update');
+    Route::delete('/products/{id}', [AdminController::class, 'destroyProduct'])->name('products.destroy');
     
-    // Gestion commandes
-    Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders');
-    Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');
-    Route::post('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+    // Gestion commandes - TOUTES avec AdminController
+    Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
+    Route::get('/orders/{id}', [AdminController::class, 'showOrder'])->name('orders.show');
+    Route::post('/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.status');
+    
+    // Gestion clients
+    Route::get('/clients', [AdminController::class, 'clients'])->name('clients');
+    Route::get('/clients/{id}', [AdminController::class, 'showClient'])->name('clients.show');
     
     // Gestion ventes sur place
     Route::get('/sales', [AdminController::class, 'sales'])->name('sales');
     Route::get('/sales/create', [AdminController::class, 'createSale'])->name('sales.create');
     Route::post('/sales', [AdminController::class, 'storeSale'])->name('sales.store');
+    
+    // Statistiques
+    Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics');
 });
 
 // Routes d'authentification (Breeze)

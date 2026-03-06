@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -6,12 +7,11 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
     use RegistersUsers;
-
-    protected $redirectTo = '/home';
 
     public function __construct()
     {
@@ -33,11 +33,28 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => 'client', // Par défaut, tout nouvel utilisateur est client
+            'role' => 'client',
         ]);
     }
 
-    protected function registered($request, $user)
+    /**
+     * Get the post register redirect path.
+     *
+     * @return string
+     */
+    public function redirectTo()
+    {
+        return route('home', [], false);
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
     {
         return redirect()->route('home');
     }

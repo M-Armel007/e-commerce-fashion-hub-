@@ -40,12 +40,18 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'client', // Ajout du rôle client par défaut
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        // Redirection personnalisée selon le rôle
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        
+        return redirect()->route('home'); // Redirige vers la route nommée 'home'
     }
 }

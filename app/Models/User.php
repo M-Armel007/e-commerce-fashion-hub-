@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,15 +30,18 @@ class User extends Authenticatable
         ];
     }
 
-    // Vérifier si l'utilisateur est admin
     public function isAdmin()
     {
         return $this->role === 'admin';
     }
 
-    // Vérifier si l'utilisateur est client
     public function isClient()
     {
         return $this->role === 'client';
+    }
+    
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'client_id');
     }
 }

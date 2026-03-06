@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -9,13 +10,32 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/home';
-
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
     }
 
+    /**
+     * Get the post login redirect path.
+     *
+     * @return string
+     */
+    public function redirectTo()
+    {
+        if (auth()->check() && auth()->user()->isAdmin()) {
+            return route('admin.dashboard', [], false);
+        }
+        
+        return route('home', [], false);
+    }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
     protected function authenticated(Request $request, $user)
     {
         if ($user->isAdmin()) {
